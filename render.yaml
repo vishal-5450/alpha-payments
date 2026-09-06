@@ -19,14 +19,9 @@ services:
       # Public site URL — update after first deploy to your onrender.com URL or custom domain
       - key: NEXT_PUBLIC_SITE_URL
         sync: false
-      - key: SMTP_USER
+      # Resend over HTTPS — required on Render free (SMTP ports are blocked)
+      - key: RESEND_API_KEY
         sync: false
-      - key: SMTP_PASS
-        sync: false
-      - key: SMTP_HOST
-        value: smtp.gmail.com
-      - key: SMTP_PORT
-        value: "465"
       - key: MAIL_FROM
         sync: false
       - key: MAIL_TO

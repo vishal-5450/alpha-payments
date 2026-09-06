@@ -1,5 +1,6 @@
 import "server-only";
 import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { site } from "./site";
 
 type Mail = {
@@ -11,18 +12,39 @@ type Mail = {
 };
 
 /**
- * Sends e-mail over SMTP (Gmail / Google Workspace by default).
+ * Sends form notification e-mail.
  *
- * Required env:  SMTP_USER, SMTP_PASS   (a Google *App Password*, not the account password)
- * Optional env:  SMTP_HOST (smtp.gmail.com), SMTP_PORT (465), MAIL_FROM, MAIL_TO
+ * Preference order:
+ *  1. Resend (HTTPS) when RESEND_API_KEY is set — works on Render free tier
+ *  2. SMTP (Gmail) when SMTP_USER + SMTP_PASS are set — fine locally / paid hosts
+ *  3. Console log — local/dev without credentials
  *
- * Gmail only lets the authenticated mailbox — or one of its verified "Send mail as"
- * aliases — appear in From. MAIL_FROM therefore defaults to SMTP_USER.
+ * Required for production on Render free: RESEND_API_KEY
+ * Optional: MAIL_FROM, MAIL_TO
  *
- * Without SMTP_USER/SMTP_PASS (local development) the message is logged to the
- * server console and reported as sent, so forms stay fully testable.
+ * Resend "from" must be a verified domain sender (or onboarding@resend.dev for tests).
  */
 export async function sendMail(mail: Mail): Promise<{ ok: true; mode: "sent" | "logged" }> {
+  const fromAddress = process.env.MAIL_FROM ?? process.env.SMTP_USER ?? "onboarding@resend.dev";
+  const from = fromAddress.includes("<") ? fromAddress : `"${site.name} Website" <${fromAddress}>`;
+
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    const resend = new Resend(resendKey);
+    const { error } = await resend.emails.send({
+      from,
+      to: mail.to,
+      replyTo: mail.replyTo,
+      subject: mail.subject,
+      text: mail.text,
+      html: mail.html,
+    });
+    if (error) {
+      throw new Error(error.message || "Resend send failed");
+    }
+    return { ok: true, mode: "sent" };
+  }
+
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
 
@@ -34,8 +56,6 @@ export async function sendMail(mail: Mail): Promise<{ ok: true; mode: "sent" | "
 
   const host = process.env.SMTP_HOST ?? "smtp.gmail.com";
   const port = Number(process.env.SMTP_PORT ?? 465);
-  const fromAddress = process.env.MAIL_FROM ?? user;
-  const from = fromAddress.includes("<") ? fromAddress : `"${site.name} Website" <${fromAddress}>`;
 
   const transporter = nodemailer.createTransport({
     host,

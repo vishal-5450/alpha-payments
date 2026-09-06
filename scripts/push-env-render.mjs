@@ -66,6 +66,7 @@ if (!local.NEXT_PUBLIC_SITE_URL || /localhost|127\.0\.0\.1/.test(local.NEXT_PUBL
 
 const keys = [
   "NEXT_PUBLIC_SITE_URL",
+  "RESEND_API_KEY",
   "SMTP_USER",
   "SMTP_PASS",
   "SMTP_HOST",

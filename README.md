@@ -19,13 +19,14 @@ See `.env.example` for the full list.
 | Variable | Purpose |
 | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Public URL used for metadata, sitemap and Open Graph. |
-| `SMTP_USER`, `SMTP_PASS` | Gmail / Google Workspace mailbox that sends form notifications. `SMTP_PASS` must be a Google **App Password** (requires 2-Step Verification on the account), never the login password. When empty, submissions are logged to the server console instead of sent. |
+| `RESEND_API_KEY` | **Preferred for production (esp. Render free).** Sends form mail over HTTPS via [Resend](https://resend.com). When set, SMTP is ignored. |
+| `SMTP_USER`, `SMTP_PASS` | Optional Gmail SMTP fallback (local / paid hosts). Blocked on Render free. |
 | `SMTP_HOST`, `SMTP_PORT` | Default `smtp.gmail.com` / `465`. |
-| `MAIL_FROM` | From header. Must be `SMTP_USER` or a verified "Send mail as" alias of it, otherwise Gmail rewrites it. |
+| `MAIL_FROM` | From header. With Resend, must be a verified domain sender (or `onboarding@resend.dev` for tests). |
 | `MAIL_TO` | Optional recipient override (testing). Leave empty in production so the HR e-mail managed in the console is used. |
 | `CONSOLE_USER`, `CONSOLE_PASSWORD` | Credentials for the hidden HR console. Quote the password if it contains `#` or spaces. |
 | `CONSOLE_SECRET` | 32+ random characters used to sign the login cookie. `openssl rand -hex 32` |
-| `DATABASE_URL` | Postgres connection string for editable contact / careers content (Supabase, Render, etc.). |
+| `DATABASE_URL` | Postgres pooler URL for editable contact / careers content (IPv4; see `.env.example`). |
 
 Test the mail setup at any time with `npm run mail:test` (optionally `npm run mail:test -- someone@example.com`).
 Seed / re-seed console content from `data/content.json` with `npm run db:seed`.
@@ -33,8 +34,9 @@ Seed / re-seed console content from `data/content.json` with `npm run db:seed`.
 ## E-mail flow
 
 Both public forms post to route handlers (`/api/contact`, `/api/careers`), which validate with Zod and send one
-notification e-mail via SMTP from `MAIL_FROM` to the HR address (`MAIL_TO` override, otherwise the HR e-mail saved in
-the console). The visitor's address is set as `Reply-To`, so HR can answer directly from their inbox.
+notification e-mail via **Resend** (or SMTP fallback) from `MAIL_FROM` to the HR address (`MAIL_TO` override,
+otherwise the HR e-mail saved in the console). The visitor's address is set as `Reply-To`, so HR can answer
+directly from their inbox.
 
 ## HR master console
 
@@ -65,7 +67,7 @@ src/components        UI, layout, home sections, forms, console forms
 src/lib/site.ts       static copy & defaults
 src/lib/content.ts    editable content store (Postgres)
 src/lib/db.ts         Postgres pool
-src/lib/email.ts      SMTP mailer
+src/lib/email.ts      Resend (HTTPS) + optional SMTP mailer
 src/lib/auth.ts       session signing & rate limiting
 src/proxy.ts          console route guard
 supabase/migrations   SQL schema for site_content
