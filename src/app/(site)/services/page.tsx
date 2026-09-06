@@ -13,14 +13,13 @@ import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Services — EFT Switching, Banking Automation & Advisory",
   description:
-    "EFT switching on Base24 Classic, Base24-eps, Postilion and ACI UP; banking test automation with FinSim, Visa and Mastercard simulators; and payments advisory from Alpha Payments.",
+    "EFT switching on Base24 Classic, Base24-eps and Postilion; banking test automation with FinSim, Visa and Mastercard simulators; and payments advisory from Alpha Payments.",
 };
 
 const platforms = [
   { name: "ACI Base24 Classic", note: "Legacy switch modernisation & support" },
   { name: "ACI Base24-eps", note: "Implementation, upgrades, custom components" },
   { name: "Postilion", note: "Acquiring & issuing configuration" },
-  { name: "ACI UP Framework", note: "Universal Payments integration" },
   { name: "HPE NonStop / Guardian", note: "TAL, TACL, Pathway, Enscribe" },
   { name: "EMV & Tokenisation", note: "Chip, contactless, token service" },
 ];

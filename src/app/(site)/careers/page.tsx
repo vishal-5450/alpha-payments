@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Briefcase, MapPin, Rocket, GraduationCap, Heart, Sparkles } from "lucide-react";
+import { ArrowUpRight, Rocket, GraduationCap, Heart, Sparkles } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Button } from "@/components/ui/Button";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { CareerForm } from "@/components/forms/CareerForm";
-import { openRoles, perks, site } from "@/lib/site";
+import { RoleCard } from "@/components/careers/RoleCard";
+import { perks } from "@/lib/site";
+import { activeJobs, getContent } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Careers — Join Alpha Payments",
@@ -17,7 +19,12 @@ export const metadata: Metadata = {
 
 const perkIcons = [Sparkles, GraduationCap, Rocket, Heart];
 
-export default function CareersPage() {
+export default async function CareersPage({ searchParams }: PageProps<"/careers">) {
+  const [{ contact, careers }, params] = await Promise.all([getContent(), searchParams]);
+  const jobs = activeJobs(careers.jobs);
+  const defaultRole = typeof params.role === "string" ? params.role : undefined;
+  const hrEmail = contact.hrEmail;
+
   return (
     <>
       <PageHero
@@ -28,8 +35,8 @@ export default function CareersPage() {
         <Button href="#roles" variant="white" size="lg" arrow>
           See open roles
         </Button>
-        <Button href={`mailto:${site.hrEmail}`} variant="outline-light" size="lg">
-          {site.hrEmail}
+        <Button href={`mailto:${hrEmail}`} variant="outline-light" size="lg">
+          {hrEmail}
         </Button>
       </PageHero>
 
@@ -76,7 +83,7 @@ export default function CareersPage() {
                   Current <span className="text-gradient">openings.</span>
                 </>
               }
-              description="Placeholder roles shown for layout. Do not see a fit? Send an open application and tell us what you would love to build."
+              description={careers.intro}
             />
             <Reveal delay={0.2}>
               <Link href="#apply" className="group mt-8 inline-flex items-center gap-2 font-semibold text-brand-700">
@@ -86,31 +93,16 @@ export default function CareersPage() {
             </Reveal>
           </div>
           <Stagger className="grid gap-3 lg:col-span-7" stagger={0.06}>
-            {openRoles.map((r) => (
-              <StaggerItem key={r.title}>
-                <Link
-                  href="#apply"
-                  className="ring-gradient group flex flex-col gap-3 rounded-2xl border border-ink-800/8 bg-surface p-5 transition-[transform,box-shadow,background-color] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 hover:bg-white hover:shadow-[var(--shadow-card-hover)] sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div>
-                    <div className="font-display text-lg font-bold tracking-tight text-ink-800">{r.title}</div>
-                    <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink-800/60">
-                      <span className="inline-flex items-center gap-1.5">
-                        <Briefcase className="size-3.5" /> {r.team}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <MapPin className="size-3.5" /> {r.location}
-                      </span>
-                      <span>{r.type}</span>
-                    </div>
-                  </div>
-                  <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-brand-700">
-                    Apply
-                    <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
-                </Link>
+            {jobs.map((r) => (
+              <StaggerItem key={r.id}>
+                <RoleCard role={r} />
               </StaggerItem>
             ))}
+            {jobs.length === 0 && (
+              <div className="rounded-2xl border border-dashed border-ink-800/15 bg-surface p-8 text-center text-ink-800/60">
+                There are no open roles right now. Send an open application and we will keep your profile on file.
+              </div>
+            )}
           </Stagger>
         </div>
       </section>
@@ -130,8 +122,8 @@ export default function CareersPage() {
               description={
                 <>
                   Fill in the form or send your CV directly to{" "}
-                  <a href={`mailto:${site.hrEmail}`} className="font-semibold text-brand-700 underline-offset-4 hover:underline">
-                    {site.hrEmail}
+                  <a href={`mailto:${hrEmail}`} className="font-semibold text-brand-700 underline-offset-4 hover:underline">
+                    {hrEmail}
                   </a>
                   .
                 </>
@@ -140,7 +132,7 @@ export default function CareersPage() {
           </div>
           <div className="lg:col-span-8">
             <Reveal delay={0.1}>
-              <CareerForm />
+              <CareerForm key={defaultRole ?? "open"} defaultRole={defaultRole} roles={jobs.map((j) => j.title)} hrEmail={hrEmail} />
             </Reveal>
           </div>
         </div>

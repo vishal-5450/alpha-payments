@@ -140,7 +140,7 @@ export function TransactionFlow({ className }: { className?: string }) {
           >
             <div className="relative grid size-20 place-items-center rounded-2xl border border-white/15 bg-[linear-gradient(160deg,rgb(30_136_229/0.35),rgb(11_95_194/0.15))] shadow-[0_0_60px_-10px_rgb(63_169_245/0.8)] backdrop-blur-xl sm:size-24">
               <span className="absolute inset-0 animate-pulse-ring rounded-2xl border border-brand-300/40" />
-              <LogoMark className="h-10 w-14" id="flow" />
+              <LogoMark className="h-11 w-auto drop-shadow-[0_6px_16px_rgb(63_169_245/0.6)]" id="flow" />
             </div>
             <span className="mt-2 rounded-full bg-white/8 px-2.5 py-1 text-[0.65rem] font-semibold tracking-wide text-white/80">
               ALPHA SWITCH

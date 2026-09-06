@@ -9,7 +9,7 @@ import { Logo } from "./Logo";
 import { nav, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-export function Navbar() {
+export function Navbar({ phone, email }: { phone: string; email: string }) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -173,7 +173,7 @@ export function Navbar() {
                 Let&apos;s talk
               </Link>
               <p className="mt-4 text-center text-sm text-ink-800/50">
-                {site.phone} · {site.email}
+                {phone} · {email}
               </p>
             </div>
           </motion.div>

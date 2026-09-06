@@ -22,9 +22,9 @@ export function PageHero({ eyebrow, title, description, children, className, ali
       <div className="bg-grid-dark absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_75%)]" />
       {/* Brand watermark */}
       {align === "left" && (
-        <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-1/2 hidden -translate-y-1/2 opacity-[0.16] mask-fade-b lg:block xl:-right-10">
+        <div aria-hidden="true" className="pointer-events-none absolute -right-16 top-1/2 hidden -translate-y-1/2 opacity-[0.14] mask-fade-b lg:block xl:right-0">
           <div className="animate-float-slow">
-            <LogoMark className="h-[26rem] w-[36rem]" id="hero-wm" />
+            <LogoMark className="h-[30rem] w-auto" id="hero-wm" />
           </div>
         </div>
       )}

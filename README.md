@@ -1,57 +1,72 @@
-# Alpha Payments — Website
+# Alpha Payments — company website
 
-Marketing website for **Alpha Payments LLP** (alphapay.co.in), built with Next.js 16 (App Router), React 19, Tailwind CSS v4 and Motion.
+Next.js 16 (App Router) · Tailwind CSS v4 · Motion · TypeScript.
 
 ## Run locally
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+cp .env.example .env.local   # then fill in the values
+npm run dev                  # http://localhost:3000
 ```
 
-```bash
-npm run lint       # ESLint
-npm run build      # production build
-npm start          # serve the production build
-```
+`npm run build && npm start` runs the production server. `npm run lint` runs ESLint.
 
-## Configuration
+## Environment variables
 
-Copy `.env.example` to `.env.local` and fill in the values:
+See `.env.example` for the full list.
 
 | Variable | Purpose |
 | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Canonical URL used for metadata, sitemap and Open Graph |
-| `RESEND_API_KEY` | [Resend](https://resend.com) key for the contact and careers forms. When empty, submissions are logged to the server console and reported as successful (handy for local testing). |
-| `MAIL_FROM` | Verified sender address, e.g. `Alpha Payments <website@alphapay.co.in>` |
-| `CONTACT_TO_EMAIL` | Recipient for the contact form (default `info@alphapay.co.in`) |
-| `HR_TO_EMAIL` | Recipient for the careers form (default `hr@alphapay.co.in`) |
+| `NEXT_PUBLIC_SITE_URL` | Public URL used for metadata, sitemap and Open Graph. |
+| `SMTP_USER`, `SMTP_PASS` | Gmail / Google Workspace mailbox that sends form notifications. `SMTP_PASS` must be a Google **App Password** (requires 2-Step Verification on the account), never the login password. When empty, submissions are logged to the server console instead of sent. |
+| `SMTP_HOST`, `SMTP_PORT` | Default `smtp.gmail.com` / `465`. |
+| `MAIL_FROM` | From header. Must be `SMTP_USER` or a verified "Send mail as" alias of it, otherwise Gmail rewrites it. |
+| `MAIL_TO` | Optional recipient override (testing). Leave empty in production so the HR e-mail managed in the console is used. |
+| `CONSOLE_USER`, `CONSOLE_PASSWORD` | Credentials for the hidden HR console. Quote the password if it contains `#` or spaces. |
+| `CONSOLE_SECRET` | 32+ random characters used to sign the login cookie. `openssl rand -hex 32` |
+| `CONTENT_DIR` | Folder where console edits are stored (`./data` by default). On hosts with an ephemeral filesystem point this at a persistent disk. |
 
-## Editing content
+Test the mail setup at any time with `npm run mail:test` (optionally `npm run mail:test -- someone@example.com`).
 
-All copy, navigation, stats, services, products, partner tiles, testimonials and open roles live in
-[`src/lib/site.ts`](src/lib/site.ts). Items marked *placeholder* in that file should be replaced before go-live:
+## E-mail flow
 
-- `stats` figures
-- `trustedBy` / `partnerCategories` names (and add real logos under `public/partners`)
-- `testimonials`
-- `openRoles`
-- Leadership profiles and milestones in [`src/app/about/page.tsx`](src/app/about/page.tsx)
+Both public forms post to route handlers (`/api/contact`, `/api/careers`), which validate with Zod and send one
+notification e-mail via SMTP from `MAIL_FROM` to the HR address (`MAIL_TO` override, otherwise the HR e-mail saved in
+the console). The visitor's address is set as `Reply-To`, so HR can answer directly from their inbox.
 
-## Structure
+## HR master console
+
+A hidden, unlinked admin area lives at **`/console`** (`/console/login` to sign in). It is excluded from `robots.txt`,
+sent with `X-Robots-Tag: noindex` and protected by `src/proxy.ts` plus per-action session checks.
+
+What HR can manage:
+
+- **Contact info** — general e-mail, HR e-mail (form recipient), phone, office hours, three address lines, Google Maps
+  query, LinkedIn / X links. Changes appear immediately in the navigation, footer and Contact page.
+- **Jobs** — create, edit, publish/unpublish and delete openings with a full description and requirements list. Published
+  roles render on `/careers` with an expandable description and a pre-filled application form.
+- **Careers intro text** — the sentence shown above the roles list.
+
+Security: HMAC-SHA256 signed, `httpOnly` cookie scoped to `/console`, 8-hour expiry, constant-time credential
+comparison, 5 failed attempts per IP per 15 minutes. Change `CONSOLE_PASSWORD` and `CONSOLE_SECRET` before going live.
+
+Content is stored as JSON in `CONTENT_DIR/content.json` (git-ignored). If the file is missing the defaults from
+`src/lib/site.ts` are used, so the site always renders.
+
+## Project layout
 
 ```
-src/
-  app/                 routes (home, services, products, about, partners, careers, contact, api/*)
-  components/
-    layout/            Navbar, Footer, PageHero, CTASection, Logo
-    home/              home page sections (Hero, TransactionFlow, ProductShowcase, ...)
-    products/          in-code product UI mocks (Insight, Decipher, API Genie)
-    forms/             ContactForm, CareerForm, form fields, submit hook
-    ui/                design-system primitives (Button, GlassCard, Reveal, Counter, Marquee, TiltCard, Aurora)
-  lib/                 site content, validation schemas, e-mail helper
+src/app/(site)        public pages (share Navbar + Footer)
+src/app/console       HR console: login, overview, contact info, jobs
+src/app/api           form route handlers
+src/components        UI, layout, home sections, forms, console forms
+src/lib/site.ts       static copy & defaults
+src/lib/content.ts    editable content store
+src/lib/email.ts      SMTP mailer
+src/lib/auth.ts       session signing & rate limiting
+src/proxy.ts          console route guard
 ```
 
-## Deployment
-
-Any Node host that supports Next.js server features works (Vercel, Render, Netlify, a VPS). Set the environment variables above in the host's dashboard. Bind to `0.0.0.0:$PORT` on Render (`next start -p $PORT`).
+Brand assets: the logo is a vector trace of `public/logo.png` (`src/components/layout/logo-paths.ts`), used for the
+navigation lockup, footer, favicon (`src/app/icon.png`), Open Graph image and background watermarks.

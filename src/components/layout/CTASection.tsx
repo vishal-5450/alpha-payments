@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/Button";
+import { LogoMark } from "@/components/layout/Logo";
 import { Reveal } from "@/components/ui/Reveal";
-import { site } from "@/lib/site";
+import { getContent, phoneHref } from "@/lib/content";
 
 type Props = {
   title?: string;
@@ -9,12 +10,14 @@ type Props = {
   secondary?: { label: string; href: string };
 };
 
-export function CTASection({
+export async function CTASection({
   title = "Let's build the next generation of your payments stack.",
   description = "Talk to our switch engineers about implementation, monitoring, automation or a modernisation roadmap. We respond within one business day.",
   primary = { label: "Start a conversation", href: "/contact" },
-  secondary = { label: `Call ${site.phone}`, href: site.phoneHref },
+  secondary: secondaryProp,
 }: Props) {
+  const { contact } = await getContent();
+  const secondary = secondaryProp ?? { label: `Call ${contact.phone}`, href: phoneHref(contact.phone) };
   return (
     <section className="container-x section-y">
       <Reveal>
@@ -23,6 +26,11 @@ export function CTASection({
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgb(30_136_229/0.55),transparent_60%)]" />
           <div className="absolute -bottom-40 left-1/2 h-96 w-[70rem] -translate-x-1/2 rounded-full bg-[conic-gradient(from_180deg,rgb(11_95_194/0.5),rgb(94_234_212/0.35),rgb(167_139_250/0.35),rgb(11_95_194/0.5))] blur-[100px] animate-spin-slow" />
           <div className="bg-grid-dark absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
+
+          {/* Brand watermark */}
+          <div aria-hidden="true" className="pointer-events-none absolute -left-10 -top-16 opacity-[0.07] sm:left-0">
+            <LogoMark className="h-64 w-auto sm:h-80" id="cta-wm" flat />
+          </div>
 
           {/* Orbiting ring */}
           <div aria-hidden="true" className="absolute left-1/2 top-1/2 size-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10 [mask-image:linear-gradient(to_bottom,black,transparent)]" />

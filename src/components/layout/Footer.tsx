@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
-import { Logo } from "./Logo";
+import { Logo, LogoMark } from "./Logo";
 import { nav, products, services, site } from "@/lib/site";
+import { phoneHref, type ContactInfo } from "@/lib/content";
 
 function Linkedin({ className }: { className?: string }) {
   return (
@@ -19,40 +20,47 @@ function XIcon({ className }: { className?: string }) {
   );
 }
 
-export function Footer() {
+export function Footer({ contact }: { contact: ContactInfo }) {
   const year = new Date().getFullYear();
   return (
     <footer className="relative overflow-hidden bg-ink-900 text-white">
       <div className="bg-grid-dark absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
       <div className="absolute -top-40 left-1/2 h-80 w-[60rem] -translate-x-1/2 rounded-full bg-brand-600/20 blur-[120px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -right-16 opacity-[0.07]">
+        <LogoMark className="h-[28rem] w-auto" id="footer-wm" flat />
+      </div>
 
       <div className="container-x relative pt-20 pb-10">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
-            <Logo tone="dark" id="footer" />
+            <Logo tone="dark" id="footer" layout="stacked" className="w-40" />
             <p className="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-white/60">
-              {site.tagline}. Payments technology, switching expertise and 24×7×365 support for banks and
+              {site.tagline}. Payments technology, switching expertise and 24×7 support for banks and
               financial institutions.
             </p>
             <div className="mt-6 flex items-center gap-3">
-              <a
-                href={site.social.linkedin}
-                target="_blank"
-                rel="noreferrer noopener"
-                aria-label="LinkedIn"
-                className="glass-dark inline-flex size-10 items-center justify-center rounded-full text-white/80 transition hover:text-white hover:bg-white/15"
-              >
-                <Linkedin className="size-4" />
-              </a>
-              <a
-                href={site.social.x}
-                target="_blank"
-                rel="noreferrer noopener"
-                aria-label="X (formerly Twitter)"
-                className="glass-dark inline-flex size-10 items-center justify-center rounded-full text-white/80 transition hover:text-white hover:bg-white/15"
-              >
-                <XIcon className="size-4" />
-              </a>
+              {contact.social.linkedin && (
+                <a
+                  href={contact.social.linkedin}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label="LinkedIn"
+                  className="glass-dark inline-flex size-10 items-center justify-center rounded-full text-white/80 transition hover:text-white hover:bg-white/15"
+                >
+                  <Linkedin className="size-4" />
+                </a>
+              )}
+              {contact.social.x && (
+                <a
+                  href={contact.social.x}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label="X (formerly Twitter)"
+                  className="glass-dark inline-flex size-10 items-center justify-center rounded-full text-white/80 transition hover:text-white hover:bg-white/15"
+                >
+                  <XIcon className="size-4" />
+                </a>
+              )}
             </div>
           </div>
 
@@ -94,19 +102,19 @@ export function Footer() {
                 <li className="flex gap-3">
                   <MapPin className="mt-0.5 size-4 shrink-0 text-brand-300" />
                   <span>
-                    {site.address.line1}, {site.address.line2}, {site.address.line3}
+                    {[contact.address.line1, contact.address.line2, contact.address.line3].filter(Boolean).join(", ")}
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <Phone className="mt-0.5 size-4 shrink-0 text-brand-300" />
-                  <a href={site.phoneHref} className="transition hover:text-white">
-                    {site.phone}
+                  <a href={phoneHref(contact.phone)} className="transition hover:text-white">
+                    {contact.phone}
                   </a>
                 </li>
                 <li className="flex gap-3">
                   <Mail className="mt-0.5 size-4 shrink-0 text-brand-300" />
-                  <a href={`mailto:${site.email}`} className="transition hover:text-white">
-                    {site.email}
+                  <a href={`mailto:${contact.email}`} className="transition hover:text-white">
+                    {contact.email}
                   </a>
                 </li>
               </ul>

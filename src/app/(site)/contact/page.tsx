@@ -3,28 +3,32 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { ContactForm } from "@/components/forms/ContactForm";
-import { site } from "@/lib/site";
+import { getContent, phoneHref } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Contact Us — Mumbai Office",
-  description: `Contact Alpha Payments LLP: ${site.address.line1}, ${site.address.line3}. Phone ${site.phone}, e-mail ${site.email}. ${site.hours}.`,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { contact } = await getContent();
+  return {
+    title: "Contact Us — Mumbai Office",
+    description: `Contact Alpha Payments LLP: ${contact.address.line1}, ${contact.address.line3}. Phone ${contact.phone}, e-mail ${contact.email}. ${contact.hours}.`,
+  };
+}
 
-const cards = [
-  {
-    icon: MapPin,
-    title: "Office address",
-    lines: [site.address.line1, site.address.line2, site.address.line3],
-    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address.mapsQuery)}`,
-    cta: "Open in Google Maps",
-  },
-  { icon: Phone, title: "Phone", lines: [site.phone], href: site.phoneHref, cta: "Call us" },
-  { icon: Mail, title: "E-mail", lines: [site.email], href: `mailto:${site.email}`, cta: "Write to us" },
-  { icon: Clock, title: "Office hours", lines: [site.hours] },
-];
+export default async function ContactPage() {
+  const { contact } = await getContent();
+  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(contact.address.mapsQuery)}&output=embed`;
 
-export default function ContactPage() {
-  const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.address.mapsQuery)}&output=embed`;
+  const cards = [
+    {
+      icon: MapPin,
+      title: "Office address",
+      lines: [contact.address.line1, contact.address.line2, contact.address.line3].filter(Boolean),
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.address.mapsQuery)}`,
+      cta: "Open in Google Maps",
+    },
+    { icon: Phone, title: "Phone", lines: [contact.phone], href: phoneHref(contact.phone), cta: "Call us" },
+    { icon: Mail, title: "E-mail", lines: [contact.email], href: `mailto:${contact.email}`, cta: "Write to us" },
+    { icon: Clock, title: "Office hours", lines: [contact.hours] },
+  ];
 
   return (
     <>

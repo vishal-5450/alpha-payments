@@ -42,7 +42,7 @@ const leadership = [
 
 const milestones = [
   { year: "2019", text: "Alpha Payments LLP founded in Mumbai by veteran switch engineers." },
-  { year: "2020", text: "First Base24-eps implementation delivered; 24×7×365 support desk established." },
+  { year: "2020", text: "First Base24-eps implementation delivered; 24×7 support desk established." },
   { year: "2022", text: "Insight and Decipher launched for BASE24-eps monitoring and reporting." },
   { year: "2024", text: "API Genie released; automation practice expands with simulator expertise." },
   { year: "Today", text: "Serving banks and processors across India and the Middle East." },
@@ -82,7 +82,7 @@ export default function AboutPage() {
                 benchmark for how payments technology partners serve their clients.
               </p>
               <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
-                {["Quality service", "Exponential growth", "Customer satisfaction", "Timely delivery", "24×7×365 support"].map((v) => (
+                {["Quality service", "Exponential growth", "Customer satisfaction", "Timely delivery", "24×7 support"].map((v) => (
                   <li key={v} className="flex items-center gap-2 text-sm text-ink-800/80">
                     <Check className="size-4 text-brand-600" strokeWidth={3} /> {v}
                   </li>

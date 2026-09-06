@@ -6,9 +6,10 @@ import { careerSchema } from "@/lib/validation";
 import { useFormSubmit } from "./useFormSubmit";
 import { TextArea, TextField } from "./Field";
 import { Button } from "@/components/ui/Button";
-import { openRoles, site } from "@/lib/site";
 
-export function CareerForm({ defaultRole }: { defaultRole?: string }) {
+type Props = { defaultRole?: string; roles: string[]; hrEmail: string };
+
+export function CareerForm({ defaultRole, roles, hrEmail }: Props) {
   const { status, errors, serverError, onSubmit, clearError, reset } = useFormSubmit("/api/careers", careerSchema);
 
   return (
@@ -53,14 +54,14 @@ export function CareerForm({ defaultRole }: { defaultRole?: string }) {
               onChange={() => clearError("role")}
             />
             <datalist id="roles">
-              {openRoles.map((r) => (
-                <option key={r.title} value={r.title} />
+              {roles.map((r) => (
+                <option key={r} value={r} />
               ))}
               <option value="Open application" />
             </datalist>
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField label="LinkedIn profile URL" name="linkedin" type="url" error={errors.linkedin} onChange={() => clearError("linkedin")} />
-              <TextField label="CV link (Drive / Dropbox)" name="cvLink" type="url" error={errors.cvLink} onChange={() => clearError("cvLink")} hint={`Or e-mail your CV to ${site.hrEmail}`} />
+              <TextField label="CV link (Drive / Dropbox)" name="cvLink" type="url" error={errors.cvLink} onChange={() => clearError("cvLink")} hint={`Or e-mail your CV to ${hrEmail}`} />
             </div>
             <TextArea label="Anything you would like us to know" name="message" error={errors.message} />
             <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />

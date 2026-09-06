@@ -8,7 +8,7 @@ export const site = {
   legalName: "Alpha Payments LLP",
   tagline: "Delivering Unmatched Quality in Every Transaction",
   description:
-    "Alpha Payments is a Mumbai-based payments technology firm specialising in EFT switching (Base24, Postilion, UP), banking automation, financial simulators and advisory for banks and financial institutions.",
+    "Alpha Payments is a Mumbai-based payments technology firm specialising in EFT switching (Base24, Postilion), banking automation, financial simulators and advisory for banks and financial institutions.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://alphapay.co.in",
   email: "info@alphapay.co.in",
   hrEmail: "hr@alphapay.co.in",
@@ -40,7 +40,7 @@ export const nav = [
 /* ---------------------------------- Stats --------------------------------- */
 /* Placeholder figures. Replace with real numbers before go-live. */
 export const stats = [
-  { value: 24, suffix: "×7×365", label: "Customer support coverage", decimals: 0 },
+  { value: 24, suffix: "×7", label: "Customer support coverage", decimals: 0 },
   { value: 50, suffix: "+", label: "Switch deployments & upgrades", decimals: 0 },
   { value: 99.99, suffix: "%", label: "Uptime targeted on monitored switches", decimals: 2 },
   { value: 4, suffix: "", label: "Platforms: Guardian, Linux, Unix, Windows", decimals: 0 },
@@ -51,12 +51,12 @@ export const services = [
   {
     slug: "eft-switching",
     title: "EFT Switching Services",
-    short: "End-to-end delivery on ACI Base24 Classic, Base24-eps, Postilion and UP.",
+    short: "End-to-end delivery on ACI Base24 Classic, Base24-eps and Postilion.",
     description:
-      "Wide-ranging experience deploying EFT switch solutions and related services for financial institutions. Our expertise spans ACI Base24 Classic, Base24-eps, Postilion and Universal Payments (UP), from greenfield implementation to upgrades, certifications and 24×7 production support.",
+      "Wide-ranging experience deploying EFT switch solutions and related services for financial institutions. Our expertise spans ACI Base24 Classic, Base24-eps, Postilion and related interfaces, from greenfield implementation to upgrades, certifications and 24×7 production support.",
     highlights: [
       "Base24 Classic & Base24-eps implementation and upgrades",
-      "Postilion and ACI UP framework deployments",
+      "Postilion acquiring and issuing deployments",
       "EMV, contactless and tokenised card enablement",
       "Interchange & network certification (Visa, Mastercard, RuPay, NPCI)",
       "Performance tuning, capacity planning and DR drills",
@@ -155,9 +155,9 @@ export type Product = (typeof products)[number];
 export const processSteps = [
   { step: "01", title: "Discover & define", text: "We document system requirements, analyse your business needs and design the technical solution." },
   { step: "02", title: "Estimate & plan", text: "Transparent effort, budget and timeline estimation with a named project manager from day one." },
-  { step: "03", title: "Build & implement", text: "Base24 Classic / EPS, EMV and UPF implementation by certified switch engineers." },
+  { step: "03", title: "Build & implement", text: "Base24 Classic / EPS and EMV implementation by certified switch engineers." },
   { step: "04", title: "Test & certify", text: "Simulator-driven testing, scheme certification and automated regression before go-live." },
-  { step: "05", title: "Support 24×7×365", text: "Client-centric production support delivered through deep technical expertise." },
+  { step: "05", title: "Support 24×7", text: "Client-centric production support delivered through deep technical expertise." },
 ] as const;
 
 /* ---------------------------------- Values -------------------------------- */
@@ -176,12 +176,11 @@ export const capabilities = [
   "Provisioning, effort and budget estimation",
   "Base24 Classic & Base24-eps implementation",
   "EMV solution implementation",
-  "UPF implementation",
   "Managing software projects of large, medium and small scale",
   "Strong customer relationship management",
   "Timely delivery",
   "Software testing & certifications",
-  "24 × 7 × 365 customer support",
+  "24 × 7 customer support",
 ] as const;
 
 /* -------------------------------- Partners -------------------------------- */
@@ -239,12 +238,61 @@ export const testimonials = [
 ] as const;
 
 /* --------------------------------- Careers -------------------------------- */
-/* Placeholder roles. Edit or remove. */
+/* Default roles, used only until HR saves content from the console (/console). */
 export const openRoles = [
-  { title: "Base24-eps Developer", type: "Full-time", location: "Mumbai / Hybrid", team: "Switch Engineering" },
-  { title: "Payments Test Automation Engineer", type: "Full-time", location: "Mumbai", team: "Quality & Automation" },
-  { title: "TAL / TACL Engineer (NonStop)", type: "Full-time", location: "Mumbai / Remote", team: "Switch Engineering" },
-  { title: "Project Manager – Payments", type: "Full-time", location: "Mumbai", team: "Delivery" },
+  {
+    title: "Base24-eps Developer",
+    type: "Full-time",
+    location: "Mumbai / Hybrid",
+    team: "Switch Engineering",
+    description:
+      "Design, build and support Base24-eps components for issuing and acquiring flows at tier-1 banks. You will own features end to end, from requirement analysis through certification and production hand-over.\n\nYou will work alongside engineers who have delivered switch programmes for more than two decades, with a clear path towards technical leadership.",
+    requirements: [
+      "3+ years on Base24-eps or Base24 Classic (TAL / TACL / C on HPE NonStop)",
+      "Hands-on ISO 8583 message handling, EMV and scheme certification experience",
+      "Comfortable with production support rotations and incident analysis",
+      "Strong written communication with client stakeholders",
+    ],
+  },
+  {
+    title: "Payments Test Automation Engineer",
+    type: "Full-time",
+    location: "Mumbai",
+    team: "Quality & Automation",
+    description:
+      "Build the regression and certification automation that lets our clients release switch changes with confidence. You will script simulators, design test data and turn certification evidence into repeatable pipelines.",
+    requirements: [
+      "Experience with FinSim, Visa VTS or Mastercard MDS / MAS simulators",
+      "Scripting in Python, Java or Groovy; CI experience (Jenkins, GitLab, GitHub Actions)",
+      "Understanding of card transaction lifecycles and scheme mandates",
+    ],
+  },
+  {
+    title: "TAL / TACL Engineer (NonStop)",
+    type: "Full-time",
+    location: "Mumbai / Remote",
+    team: "Switch Engineering",
+    description:
+      "Maintain and modernise HPE NonStop estates that run some of the region's highest-volume switches. Performance tuning, Pathway configuration and DR readiness are part of the day job.",
+    requirements: [
+      "Solid TAL / TACL and Guardian / OSS knowledge",
+      "Pathway, Enscribe and SQL/MP exposure",
+      "Experience supporting 24×7 mission-critical systems",
+    ],
+  },
+  {
+    title: "Project Manager – Payments",
+    type: "Full-time",
+    location: "Mumbai",
+    team: "Delivery",
+    description:
+      "Lead multi-team switch implementation and upgrade programmes for banks in India and the Middle East, from estimation to go-live. You will be the single point of accountability for scope, schedule and client satisfaction.",
+    requirements: [
+      "6+ years of delivery experience, 3+ in cards or payments",
+      "Comfortable presenting to CXO-level stakeholders",
+      "PMP / PRINCE2 or equivalent is a plus",
+    ],
+  },
 ] as const;
 
 export const perks = [

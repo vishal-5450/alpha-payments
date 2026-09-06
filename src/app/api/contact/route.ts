@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { contactSchema } from "@/lib/validation";
-import { renderTable, sendMail } from "@/lib/email";
-import { site } from "@/lib/site";
+import { renderEmail, renderTable, resolveRecipient, sendMail } from "@/lib/email";
+import { getContent } from "@/lib/content";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -32,19 +32,25 @@ export async function POST(request: Request) {
     ["Phone", d.phone],
     ["Topic", d.topic],
     ["Message", d.message],
+    ["Received", new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) + " IST"],
   ]);
+
+  const { contact } = await getContent();
 
   try {
     const result = await sendMail({
-      to: process.env.CONTACT_TO_EMAIL ?? site.email,
+      to: resolveRecipient(contact.hrEmail),
       replyTo: d.email,
       subject: `[Website] ${d.topic} enquiry from ${d.name}`,
-      text: `New enquiry from the website\n\n${text}`,
-      html: `<h2 style="font-family:Inter,Arial,sans-serif;color:#0a1224">New website enquiry</h2>${html}`,
+      text: `New enquiry from the website contact form\n\n${text}`,
+      html: renderEmail("New website enquiry", "Submitted via the Contact page. Reply to this e-mail to respond to the sender.", html),
     });
     return NextResponse.json({ ok: true, mode: result.mode });
   } catch (err) {
     console.error("[contact] send failed", err);
-    return NextResponse.json({ ok: false, error: "We could not send your message. Please e-mail us directly." }, { status: 502 });
+    return NextResponse.json(
+      { ok: false, error: `We could not send your message. Please e-mail us directly at ${contact.email}.` },
+      { status: 502 },
+    );
   }
 }

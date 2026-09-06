@@ -52,8 +52,8 @@ export function Hero() {
 
           <motion.dl {...fade(1.05)} className="mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-white/10 pt-8">
             {[
-              { k: "24×7×365", v: "Production support" },
-              { k: "Base24 · UP", v: "Certified switch experts" },
+              { k: "24×7", v: "Production support" },
+              { k: "Base24", v: "Certified switch experts" },
               { k: "Since 2019", v: "Trusted by banks" },
             ].map((s) => (
               <div key={s.k}>
