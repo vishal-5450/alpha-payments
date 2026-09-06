@@ -58,8 +58,9 @@ export function SelectField({
   hint,
   className,
   options,
+  placeholder = "Select…",
   ...rest
-}: Common & ComponentProps<"select"> & { options: readonly string[] }) {
+}: Common & ComponentProps<"select"> & { options: readonly string[]; placeholder?: string }) {
   const id = `f-${name}`;
   return (
     <div className={cn("relative", className)}>
@@ -74,6 +75,9 @@ export function SelectField({
         )}
         {...rest}
       >
+        <option value="" disabled>
+          {placeholder}
+        </option>
         {options.map((o) => (
           <option key={o} value={o}>
             {o}

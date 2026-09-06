@@ -2,18 +2,24 @@
   "name": "alpha-payments",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "mail:test": "node scripts/send-test-mail.mjs"
+    "mail:test": "node scripts/send-test-mail.mjs",
+    "db:seed": "node scripts/seed-content.mjs",
+    "env:render": "node scripts/push-env-render.mjs"
   },
   "dependencies": {
     "lucide-react": "^1.41.0",
     "motion": "^13.2.0",
     "next": "16.3.4",
     "nodemailer": "^10.0.0",
+    "pg": "^8.23.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "zod": "^4.5.4"
@@ -22,6 +28,7 @@
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.1",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

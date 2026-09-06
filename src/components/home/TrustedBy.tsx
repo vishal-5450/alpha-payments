@@ -1,8 +1,18 @@
+"use client";
+
 import { Marquee } from "@/components/ui/Marquee";
 import { Reveal } from "@/components/ui/Reveal";
+import { PartnerLogoChip } from "@/components/ui/PartnerLogoChip";
 import { trustedBy } from "@/lib/site";
 
-/** Placeholder logo tiles. Swap the text for <Image> logos in /public/partners when available. */
+/**
+ * Partner / platform strip on the home page.
+ *
+ * Drop logo files into `public/partners/` using the slug filename, e.g.:
+ *   public/partners/rupay.png
+ * Prefer PNG, transparent background, ~120–200px wide.
+ * Until a file exists, a lettermark placeholder is shown in the logo slot.
+ */
 export function TrustedBy() {
   return (
     <section id="trusted" className="relative border-b border-ink-800/6 bg-surface py-14">
@@ -15,14 +25,8 @@ export function TrustedBy() {
       </div>
       <Reveal delay={0.1} className="mt-8">
         <Marquee speed={45}>
-          {trustedBy.map((name) => (
-            <div
-              key={name}
-              className="flex h-14 items-center gap-3 rounded-2xl border border-ink-800/8 bg-white px-6 font-display text-base font-bold tracking-tight text-ink-800/55 shadow-[var(--shadow-card)] transition hover:text-ink-800"
-            >
-              <span className="size-2 rounded-full bg-[linear-gradient(135deg,#0b5fc2,#3fa9f5)]" />
-              {name}
-            </div>
+          {trustedBy.map((item) => (
+            <PartnerLogoChip key={item.slug} name={item.name} slug={item.slug} />
           ))}
         </Marquee>
       </Reveal>

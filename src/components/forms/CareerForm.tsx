@@ -4,13 +4,16 @@ import { AnimatePresence, motion } from "motion/react";
 import { CircleCheckBig, LoaderCircle, Send } from "lucide-react";
 import { careerSchema } from "@/lib/validation";
 import { useFormSubmit } from "./useFormSubmit";
-import { TextArea, TextField } from "./Field";
+import { SelectField, TextArea, TextField } from "./Field";
 import { Button } from "@/components/ui/Button";
 
 type Props = { defaultRole?: string; roles: string[]; hrEmail: string };
 
 export function CareerForm({ defaultRole, roles, hrEmail }: Props) {
   const { status, errors, serverError, onSubmit, clearError, reset } = useFormSubmit("/api/careers", careerSchema);
+  const roleOptions = [...roles.filter(Boolean), "Open application"].filter(
+    (r, i, arr) => arr.indexOf(r) === i,
+  );
 
   return (
     <div id="apply" className="glass relative scroll-mt-32 overflow-hidden rounded-[2rem] p-6 sm:p-8">
@@ -37,33 +40,88 @@ export function CareerForm({ defaultRole, roles, hrEmail }: Props) {
         ) : (
           <motion.form key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onSubmit={onSubmit} noValidate className="grid gap-4">
             <div className="grid gap-4 sm:grid-cols-2">
-              <TextField label="Full name" name="name" autoComplete="name" required error={errors.name} onChange={() => clearError("name")} />
-              <TextField label="E-mail" name="email" type="email" autoComplete="email" required error={errors.email} onChange={() => clearError("email")} />
+              <TextField
+                label="First name"
+                name="firstName"
+                autoComplete="given-name"
+                required
+                error={errors.firstName}
+                onChange={() => clearError("firstName")}
+              />
+              <TextField
+                label="Last name"
+                name="lastName"
+                autoComplete="family-name"
+                required
+                error={errors.lastName}
+                onChange={() => clearError("lastName")}
+              />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <TextField label="Phone (optional)" name="phone" type="tel" autoComplete="tel" error={errors.phone} />
-              <TextField label="Years of experience" name="experience" inputMode="numeric" error={errors.experience} />
+              <TextField
+                label="E-mail"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                error={errors.email}
+                onChange={() => clearError("email")}
+              />
+              <TextField
+                label="Phone (optional)"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                inputMode="tel"
+                error={errors.phone}
+                onChange={() => clearError("phone")}
+              />
             </div>
-            <TextField
-              label="Role you are applying for"
-              name="role"
-              required
-              list="roles"
-              defaultValue={defaultRole}
-              error={errors.role}
-              onChange={() => clearError("role")}
-            />
-            <datalist id="roles">
-              {roles.map((r) => (
-                <option key={r} value={r} />
-              ))}
-              <option value="Open application" />
-            </datalist>
             <div className="grid gap-4 sm:grid-cols-2">
-              <TextField label="LinkedIn profile URL" name="linkedin" type="url" error={errors.linkedin} onChange={() => clearError("linkedin")} />
-              <TextField label="CV link (Drive / Dropbox)" name="cvLink" type="url" error={errors.cvLink} onChange={() => clearError("cvLink")} hint={`Or e-mail your CV to ${hrEmail}`} />
+              <SelectField
+                label="Role you are applying for"
+                name="role"
+                required
+                options={roleOptions}
+                placeholder="Select a role"
+                defaultValue={defaultRole && roleOptions.includes(defaultRole) ? defaultRole : ""}
+                error={errors.role}
+                onChange={() => clearError("role")}
+              />
+              <TextField
+                label="Years of experience"
+                name="experience"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={50}
+                step={1}
+                required
+                error={errors.experience}
+                onChange={() => clearError("experience")}
+              />
             </div>
-            <TextArea label="Anything you would like us to know" name="message" error={errors.message} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                label="CV / resume link"
+                name="cvLink"
+                type="url"
+                inputMode="url"
+                required
+                error={errors.cvLink}
+                onChange={() => clearError("cvLink")}
+                hint={`Google Drive, Dropbox or similar. Or e-mail ${hrEmail}`}
+              />
+              <TextField
+                label="LinkedIn (optional)"
+                name="linkedin"
+                type="url"
+                inputMode="url"
+                error={errors.linkedin}
+                onChange={() => clearError("linkedin")}
+              />
+            </div>
+            <TextArea label="Anything you would like us to know (optional)" name="message" error={errors.message} onChange={() => clearError("message")} />
             <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
             {serverError && (

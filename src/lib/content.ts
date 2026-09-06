@@ -1,17 +1,12 @@
 import "server-only";
-import { promises as fs } from "node:fs";
-import path from "node:path";
 import { openRoles, site } from "./site";
+import { query } from "./db";
 
 /**
  * Editable site content, managed from the hidden HR console (/console).
  *
- * Storage: a single JSON document at $CONTENT_DIR/content.json (default ./data).
- * When the file does not exist, the defaults from lib/site.ts are used, so the site
- * always renders. Writes are atomic (tmp file + rename).
- *
- * On hosts with an ephemeral filesystem (Render without a disk, Vercel, …) set
- * CONTENT_DIR to a persistent mount, otherwise edits are lost on redeploy.
+ * Storage: a single-row Postgres table `site_content` (JSONB), via DATABASE_URL.
+ * When the row is missing, defaults from lib/site.ts are seeded so the site always renders.
  */
 
 export type ContactInfo = {
@@ -49,8 +44,7 @@ export type SiteContent = {
   updatedAt: string;
 };
 
-const CONTENT_DIR = process.env.CONTENT_DIR ?? path.join(process.cwd(), "data");
-const FILE = path.join(CONTENT_DIR, "content.json");
+let cache: { updatedAt: string; data: SiteContent } | null = null;
 
 export function defaultContent(): SiteContent {
   const now = new Date().toISOString();
@@ -83,33 +77,41 @@ export function defaultContent(): SiteContent {
   };
 }
 
-let cache: { mtimeMs: number; data: SiteContent } | null = null;
-
 export async function getContent(): Promise<SiteContent> {
   try {
-    const stat = await fs.stat(FILE);
-    if (cache && cache.mtimeMs === stat.mtimeMs) return cache.data;
-    const raw = await fs.readFile(FILE, "utf8");
-    const parsed = JSON.parse(raw) as SiteContent;
-    const data = normalise(parsed);
-    cache = { mtimeMs: stat.mtimeMs, data };
+    const { rows } = await query<{ data: SiteContent; updated_at: Date }>(
+      "SELECT data, updated_at FROM site_content WHERE id = 1",
+    );
+    if (rows.length === 0) {
+      const seeded = defaultContent();
+      await saveContent(seeded);
+      return seeded;
+    }
+    const updatedAt = rows[0].updated_at.toISOString();
+    if (cache && cache.updatedAt === updatedAt) return cache.data;
+    const data = normalise(rows[0].data);
+    cache = { updatedAt, data };
     return data;
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code !== "ENOENT") console.error("[content] read failed, using defaults", err);
+    console.error("[content] postgres read failed, using defaults", err);
     return defaultContent();
   }
 }
 
 export async function saveContent(next: SiteContent): Promise<void> {
   const data: SiteContent = { ...next, version: 1, updatedAt: new Date().toISOString() };
-  await fs.mkdir(CONTENT_DIR, { recursive: true });
-  const tmp = `${FILE}.${process.pid}.tmp`;
-  await fs.writeFile(tmp, JSON.stringify(data, null, 2), "utf8");
-  await fs.rename(tmp, FILE);
+  await query(
+    `INSERT INTO site_content (id, data, updated_at)
+     VALUES (1, $1::jsonb, now())
+     ON CONFLICT (id) DO UPDATE
+       SET data = EXCLUDED.data,
+           updated_at = now()`,
+    [JSON.stringify(data)],
+  );
   cache = null;
 }
 
-/** Fill in any keys missing from an older file so the UI never sees undefined. */
+/** Fill in any keys missing from an older document so the UI never sees undefined. */
 function normalise(c: Partial<SiteContent>): SiteContent {
   const d = defaultContent();
   return {

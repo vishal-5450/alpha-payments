@@ -7,6 +7,7 @@ import { Reveal, Stagger, StaggerItem } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Marquee } from "@/components/ui/Marquee";
+import { PartnerLogoChip } from "@/components/ui/PartnerLogoChip";
 import { partnerCategories, trustedBy } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -63,13 +64,13 @@ export default function PartnersPage() {
         </div>
         <div className="mt-8 space-y-4">
           <Marquee speed={42}>
-            {trustedBy.map((n) => (
-              <LogoTile key={n} name={n} />
+            {trustedBy.map((item) => (
+              <PartnerLogoChip key={item.slug} name={item.name} slug={item.slug} className="h-16 w-56" />
             ))}
           </Marquee>
           <Marquee speed={48} reverse>
-            {[...trustedBy].reverse().map((n) => (
-              <LogoTile key={n} name={n} />
+            {[...trustedBy].reverse().map((item) => (
+              <PartnerLogoChip key={`rev-${item.slug}`} name={item.name} slug={item.slug} className="h-16 w-56" />
             ))}
           </Marquee>
         </div>
@@ -142,14 +143,5 @@ export default function PartnersPage() {
         primary={{ label: "Start the conversation", href: "/contact" }}
       />
     </>
-  );
-}
-
-function LogoTile({ name }: { name: string }) {
-  return (
-    <div className="flex h-16 w-52 items-center justify-center gap-3 rounded-2xl border border-ink-800/8 bg-white font-display text-base font-bold tracking-tight text-ink-800/50 shadow-[var(--shadow-card)] transition hover:text-ink-800">
-      <span className="size-2 rounded-full bg-[linear-gradient(135deg,#0b5fc2,#3fa9f5)]" />
-      {name}
-    </div>
   );
 }

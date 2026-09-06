@@ -24,12 +24,16 @@ export async function POST(request: Request) {
   const d = parsed.data;
   if (d.website) return NextResponse.json({ ok: true });
 
+  const fullName = `${d.firstName} ${d.lastName}`.trim();
+
   const { text, html } = renderTable([
-    ["Name", d.name],
+    ["Name", fullName],
+    ["First name", d.firstName],
+    ["Last name", d.lastName],
     ["E-mail", d.email],
     ["Phone", d.phone],
     ["Role", d.role],
-    ["Experience", d.experience ? `${d.experience} years` : undefined],
+    ["Experience", `${d.experience} years`],
     ["LinkedIn", d.linkedin],
     ["CV link", d.cvLink],
     ["Message", d.message],
@@ -42,7 +46,7 @@ export async function POST(request: Request) {
     const result = await sendMail({
       to: resolveRecipient(contact.hrEmail),
       replyTo: d.email,
-      subject: `[Careers] ${d.role} — ${d.name}`,
+      subject: `[Careers] ${d.role} — ${fullName}`,
       text: `New application from the website careers form\n\n${text}`,
       html: renderEmail("New job application", "Submitted via the Careers page. Reply to this e-mail to contact the candidate.", html),
     });

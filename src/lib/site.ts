@@ -204,14 +204,14 @@ export const partnerCategories = [
 ] as const;
 
 export const trustedBy = [
-  "ACI Worldwide",
-  "HPE NonStop",
-  "Visa",
-  "Mastercard",
-  "RuPay",
-  "NPCI",
-  "Postilion",
-  "Base24-eps",
+  { name: "RuPay", slug: "rupay" },
+  { name: "NPCI", slug: "npci" },
+  { name: "Postilion", slug: "postilion" },
+  { name: "Base24-eps", slug: "base24-eps" },
+  { name: "ACI Worldwide", slug: "aci-worldwide" },
+  { name: "HPE NonStop", slug: "hpe-nonstop" },
+  { name: "Visa", slug: "visa" },
+  { name: "Mastercard", slug: "mastercard" },
 ] as const;
 
 /* ------------------------------ Testimonials ------------------------------ */

@@ -1,11 +1,42 @@
 import { z } from "zod";
 
+const namePart = z
+  .string()
+  .trim()
+  .min(2, "Enter at least 2 characters")
+  .max(60, "Keep this under 60 characters")
+  .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, "Use letters only (spaces, hyphens and apostrophes allowed)");
+
+const optionalPhone = z
+  .string()
+  .trim()
+  .max(40)
+  .refine((v) => v === "" || /^[+]?[\d\s()-]{7,22}$/.test(v), {
+    message: "Enter a valid phone number",
+  });
+
+const optionalUrl = z.url("Enter a full URL starting with https://").max(300).optional().or(z.literal(""));
+
+export const contactTopics = [
+  "EFT Switching",
+  "Banking Automation",
+  "Advisory",
+  "Products / Demo",
+  "Partnership",
+  "Other",
+] as const;
+
 export const contactSchema = z.object({
-  name: z.string().trim().min(2, "Please enter your name").max(120),
+  firstName: namePart,
+  lastName: namePart,
   email: z.email("Please enter a valid e-mail address").max(200),
-  company: z.string().trim().max(160).optional().or(z.literal("")),
-  phone: z.string().trim().max(40).optional().or(z.literal("")),
-  topic: z.enum(["EFT Switching", "Banking Automation", "Advisory", "Products / Demo", "Partnership", "Other"]),
+  company: z
+    .string()
+    .trim()
+    .max(160)
+    .refine((v) => v === "" || v.length >= 2, { message: "Enter at least 2 characters" }),
+  phone: optionalPhone,
+  topic: z.enum(contactTopics, { message: "Please select a topic" }),
   message: z.string().trim().min(10, "Tell us a little more (at least 10 characters)").max(4000),
   /** Honeypot: must stay empty */
   website: z.string().max(0).optional().or(z.literal("")),
@@ -14,24 +45,29 @@ export const contactSchema = z.object({
 export type ContactInput = z.infer<typeof contactSchema>;
 
 export const careerSchema = z.object({
-  name: z.string().trim().min(2, "Please enter your name").max(120),
+  firstName: namePart,
+  lastName: namePart,
   email: z.email("Please enter a valid e-mail address").max(200),
-  phone: z.string().trim().max(40).optional().or(z.literal("")),
-  role: z.string().trim().min(2, "Please choose or type a role").max(160),
-  experience: z.string().trim().max(40).optional().or(z.literal("")),
-  linkedin: z.url("Please enter a valid URL").max(300).optional().or(z.literal("")),
-  cvLink: z.url("Please enter a valid URL").max(500).optional().or(z.literal("")),
+  phone: optionalPhone,
+  role: z.string().trim().min(1, "Please select a role").max(160),
+  experience: z.preprocess((val) => {
+    if (val === "" || val === null || val === undefined) return undefined;
+    if (typeof val === "string") {
+      const t = val.trim();
+      if (!t) return undefined;
+      return Number(t);
+    }
+    return val;
+  }, z.number({ error: "Enter years of experience as a number" }).int("Use a whole number").min(0, "Cannot be negative").max(50, "Enter a realistic number (0–50)")),
+  linkedin: optionalUrl,
+  cvLink: z.url("Enter a valid CV / resume link (https://...)").max(500),
   message: z.string().trim().max(4000).optional().or(z.literal("")),
   website: z.string().max(0).optional().or(z.literal("")),
 });
 
 export type CareerInput = z.infer<typeof careerSchema>;
 
-export const contactTopics = contactSchema.shape.topic.options;
-
 /* ------------------------------ HR console ------------------------------ */
-
-const optionalUrl = z.url("Enter a full URL starting with https://").max(300).optional().or(z.literal(""));
 
 export const contactInfoSchema = z.object({
   email: z.email("Enter a valid e-mail").max(200),

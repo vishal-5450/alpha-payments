@@ -25,8 +25,12 @@ export async function POST(request: Request) {
   // Honeypot filled: silently accept, do nothing.
   if (d.website) return NextResponse.json({ ok: true });
 
+  const fullName = `${d.firstName} ${d.lastName}`.trim();
+
   const { text, html } = renderTable([
-    ["Name", d.name],
+    ["Name", fullName],
+    ["First name", d.firstName],
+    ["Last name", d.lastName],
     ["E-mail", d.email],
     ["Company", d.company],
     ["Phone", d.phone],
@@ -41,7 +45,7 @@ export async function POST(request: Request) {
     const result = await sendMail({
       to: resolveRecipient(contact.hrEmail),
       replyTo: d.email,
-      subject: `[Website] ${d.topic} enquiry from ${d.name}`,
+      subject: `[Website] ${d.topic} enquiry from ${fullName}`,
       text: `New enquiry from the website contact form\n\n${text}`,
       html: renderEmail("New website enquiry", "Submitted via the Contact page. Reply to this e-mail to respond to the sender.", html),
     });

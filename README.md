@@ -25,9 +25,10 @@ See `.env.example` for the full list.
 | `MAIL_TO` | Optional recipient override (testing). Leave empty in production so the HR e-mail managed in the console is used. |
 | `CONSOLE_USER`, `CONSOLE_PASSWORD` | Credentials for the hidden HR console. Quote the password if it contains `#` or spaces. |
 | `CONSOLE_SECRET` | 32+ random characters used to sign the login cookie. `openssl rand -hex 32` |
-| `CONTENT_DIR` | Folder where console edits are stored (`./data` by default). On hosts with an ephemeral filesystem point this at a persistent disk. |
+| `DATABASE_URL` | Postgres connection string for editable contact / careers content (Supabase, Render, etc.). |
 
 Test the mail setup at any time with `npm run mail:test` (optionally `npm run mail:test -- someone@example.com`).
+Seed / re-seed console content from `data/content.json` with `npm run db:seed`.
 
 ## E-mail flow
 
@@ -51,8 +52,8 @@ What HR can manage:
 Security: HMAC-SHA256 signed, `httpOnly` cookie scoped to `/console`, 8-hour expiry, constant-time credential
 comparison, 5 failed attempts per IP per 15 minutes. Change `CONSOLE_PASSWORD` and `CONSOLE_SECRET` before going live.
 
-Content is stored as JSON in `CONTENT_DIR/content.json` (git-ignored). If the file is missing the defaults from
-`src/lib/site.ts` are used, so the site always renders.
+Content is stored in Postgres (`site_content` JSONB row) via `DATABASE_URL`. If the row is empty the defaults from
+`src/lib/site.ts` are seeded automatically so the site always renders.
 
 ## Project layout
 
@@ -62,10 +63,12 @@ src/app/console       HR console: login, overview, contact info, jobs
 src/app/api           form route handlers
 src/components        UI, layout, home sections, forms, console forms
 src/lib/site.ts       static copy & defaults
-src/lib/content.ts    editable content store
+src/lib/content.ts    editable content store (Postgres)
+src/lib/db.ts         Postgres pool
 src/lib/email.ts      SMTP mailer
 src/lib/auth.ts       session signing & rate limiting
 src/proxy.ts          console route guard
+supabase/migrations   SQL schema for site_content
 ```
 
 Brand assets: the logo is a vector trace of `public/logo.png` (`src/components/layout/logo-paths.ts`), used for the

@@ -43,14 +43,62 @@ export function ContactForm() {
             className="grid gap-4"
           >
             <div className="grid gap-4 sm:grid-cols-2">
-              <TextField label="Full name" name="name" autoComplete="name" required error={errors.name} onChange={() => clearError("name")} />
-              <TextField label="Work e-mail" name="email" type="email" autoComplete="email" required error={errors.email} onChange={() => clearError("email")} />
+              <TextField
+                label="First name"
+                name="firstName"
+                autoComplete="given-name"
+                required
+                error={errors.firstName}
+                onChange={() => clearError("firstName")}
+              />
+              <TextField
+                label="Last name"
+                name="lastName"
+                autoComplete="family-name"
+                required
+                error={errors.lastName}
+                onChange={() => clearError("lastName")}
+              />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <TextField label="Company / institution" name="company" autoComplete="organization" error={errors.company} />
-              <TextField label="Phone (optional)" name="phone" type="tel" autoComplete="tel" error={errors.phone} />
+              <TextField
+                label="Work e-mail"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                error={errors.email}
+                onChange={() => clearError("email")}
+              />
+              <TextField
+                label="Phone (optional)"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                inputMode="tel"
+                error={errors.phone}
+                onChange={() => clearError("phone")}
+              />
             </div>
-            <SelectField label="How can we help?" name="topic" options={contactTopics} defaultValue={contactTopics[0]} error={errors.topic} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                label="Company / institution"
+                name="company"
+                autoComplete="organization"
+                error={errors.company}
+                onChange={() => clearError("company")}
+              />
+              <SelectField
+                label="How can we help?"
+                name="topic"
+                required
+                options={contactTopics}
+                placeholder="Select a topic"
+                defaultValue=""
+                error={errors.topic}
+                onChange={() => clearError("topic")}
+              />
+            </div>
             <TextArea
               label="Tell us about your project"
               name="message"
@@ -59,7 +107,6 @@ export function ContactForm() {
               onChange={() => clearError("message")}
               hint="Platform, timeline, volumes, anything that helps us prepare."
             />
-            {/* Honeypot */}
             <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
             {serverError && (

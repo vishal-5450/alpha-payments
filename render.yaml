@@ -1,0 +1,41 @@
+# Alpha Payments — Render Blueprint
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: Alpha Payments Landing Page
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      # Public site URL — update after first deploy to your onrender.com URL or custom domain
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "465"
+      - key: MAIL_FROM
+        sync: false
+      - key: MAIL_TO
+        sync: false
+      - key: CONSOLE_USER
+        sync: false
+      - key: CONSOLE_PASSWORD
+        sync: false
+      - key: CONSOLE_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
