@@ -1,0 +1,276 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Brand blues, sampled from the Alpha Payments logo swoosh */
+  --color-brand-50: #eef6ff;
+  --color-brand-100: #d9eaff;
+  --color-brand-200: #bcdbff;
+  --color-brand-300: #8fc5fb;
+  --color-brand-400: #5cadf7;
+  --color-brand-500: #3fa9f5;
+  --color-brand-600: #1e88e5;
+  --color-brand-700: #0b5fc2;
+  --color-brand-800: #0a4b99;
+  --color-brand-900: #0c3d78;
+
+  /* Ink: the deep, premium dark used for hero / showcase / CTA */
+  --color-ink-950: #04070f;
+  --color-ink-900: #070c1a;
+  --color-ink-800: #0a1224;
+  --color-ink-700: #101b36;
+  --color-ink-600: #182647;
+
+  /* Light surfaces */
+  --color-surface: #f6f9fd;
+  --color-surface-2: #eef3fa;
+
+  /* Accent */
+  --color-accent: #5eead4;
+  --color-accent-2: #a78bfa;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-manrope), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --shadow-glow: 0 0 0 1px rgb(63 169 245 / 0.25), 0 20px 60px -20px rgb(30 136 229 / 0.55);
+  --shadow-card: 0 1px 2px rgb(10 18 36 / 0.04), 0 12px 40px -16px rgb(10 18 36 / 0.16);
+  --shadow-card-hover: 0 1px 2px rgb(10 18 36 / 0.06), 0 30px 60px -24px rgb(11 95 194 / 0.35);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-float: float 8s ease-in-out infinite;
+  --animate-float-slow: float 14s ease-in-out infinite;
+  --animate-pulse-ring: pulse-ring 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  --animate-shimmer: shimmer 2.6s linear infinite;
+  --animate-dash: dash 3s linear infinite;
+  --animate-spin-slow: spin 18s linear infinite;
+  --animate-aurora: aurora 18s ease-in-out infinite alternate;
+  --animate-travel: travel 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  --animate-scan: scan 6s linear infinite;
+  --animate-blink: blink 1.2s steps(2, start) infinite;
+
+  @keyframes travel {
+    0% { offset-distance: 0%; opacity: 0; }
+    8% { opacity: 1; }
+    92% { opacity: 1; }
+    100% { offset-distance: 100%; opacity: 0; }
+  }
+  @keyframes scan {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(100%); }
+  }
+  @keyframes blink {
+    to { visibility: hidden; }
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -18px, 0); }
+  }
+  @keyframes pulse-ring {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: -40; }
+  }
+  @keyframes aurora {
+    0% { transform: translate3d(-8%, -4%, 0) rotate(0deg) scale(1); }
+    50% { transform: translate3d(6%, 4%, 0) rotate(12deg) scale(1.08); }
+    100% { transform: translate3d(-4%, 8%, 0) rotate(-8deg) scale(1.02); }
+  }
+}
+
+@layer base {
+  * {
+    border-color: color-mix(in oklab, var(--color-ink-800) 8%, transparent);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-surface);
+    color: var(--color-ink-800);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01", "ss03";
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-brand-500) 30%, transparent);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility container-x {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media (width >= 40rem) { padding-inline: 1.5rem; }
+  @media (width >= 64rem) { padding-inline: 2rem; }
+}
+
+@utility section-y {
+  padding-block: 5rem;
+  @media (width >= 64rem) { padding-block: 7.5rem; }
+}
+
+/* Gradient text, brand */
+@utility text-gradient {
+  background-image: linear-gradient(100deg, var(--color-brand-700) 0%, var(--color-brand-500) 55%, var(--color-accent) 130%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-gradient-light {
+  background-image: linear-gradient(100deg, #ffffff 0%, var(--color-brand-300) 60%, var(--color-accent) 120%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Apple-style frosted glass (for light surfaces) */
+@utility glass {
+  background: color-mix(in oklab, white 66%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid color-mix(in oklab, white 70%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 color-mix(in oklab, white 90%, transparent),
+    0 1px 2px rgb(10 18 36 / 0.04),
+    0 20px 50px -24px rgb(10 18 36 / 0.25);
+}
+
+/* Glass for dark surfaces */
+@utility glass-dark {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.09), rgb(255 255 255 / 0.04));
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.14),
+    0 30px 80px -30px rgb(0 0 0 / 0.6);
+}
+
+/* Fine dot grid (light) */
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(10 18 36 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(10 18 36 / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@utility bg-grid-dark {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Fade edges for marquees */
+@utility mask-fade-x {
+  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+}
+
+@utility mask-fade-b {
+  mask-image: linear-gradient(to bottom, black 60%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
+}
+
+/* Subtle film-grain noise overlay */
+@utility noise {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Gradient border ring on hover */
+@utility ring-gradient {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--color-brand-500), transparent 40%, transparent 60%, var(--color-accent));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out-expo);
+    pointer-events: none;
+  }
+  &:hover::before { opacity: 1; }
+}
+
+@utility shimmer-text {
+  background: linear-gradient(110deg, currentColor 40%, var(--color-brand-300) 50%, currentColor 60%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: var(--animate-shimmer);
+}
+
+@utility pause-on-hover {
+  &:hover > * { animation-play-state: paused; }
+}
+
+/* Scrollbar polish */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-ink-800) 25%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-track { background: transparent; }
