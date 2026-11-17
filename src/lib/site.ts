@@ -103,49 +103,64 @@ export type Service = (typeof services)[number];
 /* -------------------------------- Products -------------------------------- */
 export const products = [
   {
-    slug: "insight",
-    name: "Insight",
-    kicker: "Real-time monitoring",
-    tagline: "A unified, real-time view of every transaction and every system event on your BASE24-eps switch.",
+    slug: "iso-genie",
+    name: "ISO Genie",
+    kicker: "ISO simulation & testing",
+    tagline: "ISO transaction simulation & testing platform for realistic client and host device flows.",
     description:
-      "Insight is a robust and dependable real-time transaction and system monitoring tool for BASE24-eps. It gives operations, business and risk teams one comprehensive view of system activity and transaction health so issues are caught before customers notice.",
+      "ISO Genie is a real-time ISO-based transaction simulation and testing platform. It models realistic client and host devices (ATM, POS and more), sends and receives ISO 8583 messages, and supports custom configuration of message formatters, cards and devices across VISA, Mastercard, Postbridge and other formatters.",
     features: [
-      { title: "Live transaction dashboards", text: "Approval rates, declines, response times and volumes by channel, issuer and acquirer, updated in real time." },
-      { title: "Alert & notification engine", text: "Threshold and anomaly-based alerts delivered by e-mail, SMS or webhook to the right on-call team." },
-      { title: "System activity monitoring", text: "Process, queue and interface health for the switch and its surrounding ecosystem." },
-      { title: "Flexible data analysis", text: "Slice-and-dice explorer with saved views and scheduled exports for business users." },
+      { title: "Real-time ISO simulation", text: "Simulate ISO 8583 traffic end to end with live send/receive of client and host messages." },
+      { title: "Device & formatter config", text: "Configure ATM, POS and host devices plus message formatters, cards and test data." },
+      { title: "Multi-scheme formatters", text: "Supports VISA, Mastercard, Postbridge and a variety of other ISO formatters." },
+      { title: "Logs & defect analysis", text: "Validate transmitted data, surface defects quickly and review testing logs and reports." },
+    ],
+    platforms: ["Linux", "Unix", "Windows"],
+  },
+  {
+    slug: "api-genie",
+    name: "API Genie",
+    kicker: "API simulation & testing",
+    tagline: "API transaction simulation & testing platform for JSON payment interfaces.",
+    description:
+      "API Genie is a real-time API-based transaction simulation and testing platform. It provides realistic client and host device simulation, sends and receives JSON APIs, validates data in flight, and produces testing logs and report analysis so defects are found and fixed efficiently.",
+    features: [
+      { title: "Real-time API simulation", text: "Drive live JSON API transactions without waiting on partner sandboxes." },
+      { title: "Client & host devices", text: "Realistic client and host device simulation for end-to-end API scenarios." },
+      { title: "Validation & assertions", text: "Test and validate data being transmitted with clear pass/fail outcomes." },
+      { title: "Logs & report analysis", text: "Identify defects quickly with structured testing logs and analysis reports." },
+    ],
+    platforms: ["Linux", "Unix", "Windows", "Container / Kubernetes"],
+  },
+  {
+    slug: "insight",
+    name: "INSIGHT",
+    kicker: "Real-time monitoring",
+    tagline: "Real-time transaction monitoring & analytics across your payments estate.",
+    description:
+      "INSIGHT is a real-time monitoring and analytics tool that provides centralized access to transaction intelligence across systems. It increases productivity, reduces operational risk, accelerates root-cause analysis and supports proactive threshold-based alerts.",
+    features: [
+      { title: "Real-time monitoring", text: "Live visibility of transaction and system health across connected platforms." },
+      { title: "Centralized intelligence", text: "One place for operations, risk and business teams to access transaction insight." },
+      { title: "Faster root-cause analysis", text: "Trace issues quickly so teams resolve incidents before customers feel the impact." },
+      { title: "Proactive threshold alerts", text: "Threshold-based alerts that surface risk early and keep teams ahead of outages." },
     ],
     platforms: ["Guardian (Tandem / NonStop)", "Linux", "Unix (all flavours)", "Windows"],
   },
   {
     slug: "decipher",
     name: "Decipher",
-    kicker: "Extracts & reporting",
-    tagline: "Fast, reliable TLF and PTLF extract generation with visual comparison built in.",
+    kicker: "TLF & PTLF extraction",
+    tagline: "A TLF and PTLF extraction tool for clear, audit-ready transaction extracts.",
     description:
-      "Decipher is a highly robust and dependable report-generation tool that offers seamless, reliable access to information. It turns raw TLF and PTLF logs into clear, comparable insight for reconciliation, disputes and audit.",
+      "Decipher is a TLF and PTLF extraction tool that turns raw switch logs into clear, comparable extracts for reconciliation, disputes and audit. Configure fields and filters, run on demand or on a schedule, and export in formats your operations and compliance teams already use.",
     features: [
-      { title: "TLF & PTLF extract generation", text: "Configurable field selection, filters and output formats (CSV, XLSX, JSON, fixed-width)." },
-      { title: "Comparison with charts", text: "Compare transaction populations across dates, hosts or environments with visual diffs." },
-      { title: "Scheduled & on-demand runs", text: "Automate daily extracts or run ad-hoc queries from a clean, modern UI." },
-      { title: "Audit-ready output", text: "Immutable run logs, checksums and access control for compliance teams." },
+      { title: "TLF & PTLF extraction", text: "Generate reliable extracts from TLF and PTLF with configurable field selection." },
+      { title: "Comparison & charts", text: "Compare populations across dates, hosts or environments with visual diffs." },
+      { title: "Scheduled & on-demand", text: "Automate daily extracts or run ad-hoc queries from a clean UI." },
+      { title: "Audit-ready output", text: "Immutable run logs and controlled access for compliance workflows." },
     ],
     platforms: ["Guardian (Tandem / NonStop)", "Linux", "Unix", "Windows"],
-  },
-  {
-    slug: "api-genie",
-    name: "API Genie",
-    kicker: "API simulation",
-    tagline: "An outstanding real-time API simulator for JSON and XML payment interfaces.",
-    description:
-      "API Genie lets teams simulate, test and validate JSON/XML APIs against real-time data without waiting on partner sandboxes. Platform-independent, multi-threaded and SSL-ready, it is built for high-volume certification and regression runs.",
-    features: [
-      { title: "Real-time request simulation", text: "Drive thousands of concurrent JSON or XML transactions with scripted or randomised payloads." },
-      { title: "Validation & assertions", text: "Schema, field and latency assertions with rich pass/fail reporting." },
-      { title: "Platform independent", text: "Runs anywhere a JVM does. Multi-threaded and multitasking by design." },
-      { title: "SSL / mTLS support", text: "Full TLS support including client certificates for secure partner endpoints." },
-    ],
-    platforms: ["Linux", "Unix", "Windows", "Container / Kubernetes"],
   },
 ] as const;
 

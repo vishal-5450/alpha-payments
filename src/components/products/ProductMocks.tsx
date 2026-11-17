@@ -232,6 +232,41 @@ export function DecipherMock({ className }: { className?: string }) {
 }
 
 /* ------------------------------------------------------------------------ */
+/* ISO Genie — ISO 8583 simulator                                            */
+/* ------------------------------------------------------------------------ */
+
+export function IsoGenieMock({ className }: { className?: string }) {
+  return (
+    <Window title="iso-genie — analytics · client / host" className={className}>
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        {[
+          { l: "Client devices", v: "26" },
+          { l: "Client testcases", v: "356" },
+          { l: "Host transactions", v: "101,773" },
+          { l: "Host devices", v: "23" },
+          { l: "Host testcases", v: "1,462" },
+          { l: "Unit / regression", v: "135 / 3" },
+        ].map((k) => (
+          <div key={k.l} className="rounded-xl border border-white/8 bg-white/[0.04] p-3">
+            <div className="text-[0.58rem] uppercase tracking-[0.14em] text-white/40">{k.l}</div>
+            <div className="mt-1 font-display text-lg font-bold">{k.v}</div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-3 rounded-xl border border-white/8 bg-white/[0.04] p-3">
+        <div className="flex items-center justify-between text-[0.62rem] text-white/45">
+          <span>Transaction logs overview · ISO client / host</span>
+          <span className="font-mono">VISA · Mastercard · Postbridge</span>
+        </div>
+        <div className="mt-3">
+          <Bars values={[18, 22, 40, 55, 48, 30, 28, 35, 42, 38, 50, 58, 44, 36, 52, 60, 45, 32, 48, 54]} />
+        </div>
+      </div>
+    </Window>
+  );
+}
+
+/* ------------------------------------------------------------------------ */
 /* API Genie — simulator                                                     */
 /* ------------------------------------------------------------------------ */
 
@@ -297,7 +332,8 @@ export function ApiGenieMock({ className }: { className?: string }) {
 }
 
 export const productMocks = {
+  "iso-genie": IsoGenieMock,
+  "api-genie": ApiGenieMock,
   insight: InsightMock,
   decipher: DecipherMock,
-  "api-genie": ApiGenieMock,
 } as const;

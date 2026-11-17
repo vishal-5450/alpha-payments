@@ -25,7 +25,7 @@ const models = [
   {
     icon: Network,
     title: "Technology alliance",
-    text: "Integrate Insight, Decipher or API Genie with your product, or co-develop switch components.",
+    text: "Integrate ISO Genie, API Genie, INSIGHT or Decipher with your product, or co-develop switch components.",
   },
   {
     icon: Globe,
@@ -58,7 +58,7 @@ export default function PartnersPage() {
         <div className="container-x">
           <Reveal y={12}>
             <p className="text-center text-xs font-semibold uppercase tracking-[0.22em] text-ink-800/45">
-              Ecosystem placeholders. Replace with partner logos.
+              Expertise across the platforms and networks that move money
             </p>
           </Reveal>
         </div>

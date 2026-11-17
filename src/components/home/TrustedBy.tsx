@@ -9,9 +9,9 @@ import { trustedBy } from "@/lib/site";
  * Partner / platform strip on the home page.
  *
  * Drop logo files into `public/partners/` using the slug filename, e.g.:
- *   public/partners/rupay.png
- * Prefer PNG, transparent background, ~120–200px wide.
- * Until a file exists, a lettermark placeholder is shown in the logo slot.
+ *   public/partners/visa.svg  (preferred) or visa.png / visa.webp
+ * Prefer SVG, transparent background, ~120–200px wide.
+ * Until a file exists, a lettermark is shown (never a broken image icon).
  */
 export function TrustedBy() {
   return (
